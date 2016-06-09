@@ -1,7 +1,10 @@
-#include "list.hpp"
+#include <type_traits>
+
+#include "board.hpp"
 
 int main(int argc, char **argv)
 {
-    get_t<3, cons_t<char, List<int, float, int>>> a;
+    using b1 = board::set_t<1, 1, O, board::clean_board_t<3, 3>>;
+    static_assert(std::is_same<board::get_t<1, 1, b1>, X>::value, "Error");
     return 0;
 }
