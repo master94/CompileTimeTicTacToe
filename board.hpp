@@ -3,12 +3,18 @@
 #include "list.hpp"
 #include "printer.hpp"
 
-struct Empty;
-struct X;
-struct O;
+enum class State 
+{
+    Empty,
+    X,
+    O
+};
 
 namespace board
 {
+
+template <State state>
+struct StateWrapper;
 
 template <unsigned w, unsigned h, class List>
 struct Board;
@@ -20,7 +26,7 @@ struct Board<w, h, List<Elems...>>
 };
 
 template <unsigned w, unsigned h>
-using clean_board_t = Board<w, h, create_list_t<w * h, Empty>>;
+using clean_board_t = Board<w, h, create_list_t<w * h, StateWrapper<State::Empty>>>;
 
 // ----------------------------------------------------------------------------
 
@@ -40,17 +46,17 @@ using get_t = typename Get<x, y, Board>::Type;
 
 // ----------------------------------------------------------------------------
 
-template <unsigned x, unsigned y, class Player, class Board>
+template <unsigned x, unsigned y, State state, class Board>
 struct Set;
 
-template <unsigned x, unsigned y, class Player, unsigned w, unsigned h, class List>
-struct Set<x, y, Player, Board<w, h, List>>
+template <unsigned x, unsigned y, State state, unsigned w, unsigned h, class List>
+struct Set<x, y, state, Board<w, h, List>>
 {
-    using Type = Board<w, h, put_t<y * w + x, Player, List>>;
+    using Type = Board<w, h, put_t<y * w + x, StateWrapper<state>, List>>;
 };
 
-template <unsigned x, unsigned y, class Player, class Board>
-using set_t = typename Set<x, y, Player, Board>::Type;
+template <unsigned x, unsigned y, State state, class Board>
+using set_t = typename Set<x, y, state, Board>::Type;
 
 // ----------------------------------------------------------------------------
 
@@ -102,7 +108,7 @@ struct Printer<board::Board<w, h, ElemList>>
 };
 
 template <>
-struct Printer<Empty>
+struct Printer<board::StateWrapper<State::Empty>>
 {
     static void print()
     {
@@ -111,7 +117,7 @@ struct Printer<Empty>
 };
 
 template <>
-struct Printer<O>
+struct Printer<board::StateWrapper<State::O>>
 {
     static void print()
     {
@@ -120,7 +126,7 @@ struct Printer<O>
 };
 
 template <>
-struct Printer<X>
+struct Printer<board::StateWrapper<State::X>>
 {
     static void print()
     {
