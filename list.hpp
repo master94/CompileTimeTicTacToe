@@ -84,3 +84,20 @@ struct Put<0, Elem, List>
 
 template <unsigned pos, class Elem, class List>
 using put_t = typename Put<pos, Elem, List>::Type;
+
+//-----------------------------------------------------------------------------
+
+template <unsigned len, class Elem>
+struct CreateList
+{
+    using Type = cons_t<Elem, typename CreateList<len - 1, Elem>::Type>;
+};
+
+template <class Elem>
+struct CreateList<0, Elem>
+{
+    using Type = List<>;
+};
+
+template <unsigned len, class Elem>
+using create_list_t = typename CreateList<len, Elem>::Type;
