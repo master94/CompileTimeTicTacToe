@@ -3,18 +3,19 @@
 #include "list.hpp"
 #include "printer.hpp"
 
-enum class State 
+enum class State
 {
     Empty,
     X,
     O
 };
 
+template <State state>
+struct StateWrapper;
+
 namespace board
 {
 
-template <State state>
-struct StateWrapper;
 
 template <unsigned w, unsigned h, class List>
 struct Board;
@@ -108,7 +109,7 @@ struct Printer<board::Board<w, h, ElemList>>
 };
 
 template <>
-struct Printer<board::StateWrapper<State::Empty>>
+struct Printer<StateWrapper<State::Empty>>
 {
     static void print()
     {
@@ -117,7 +118,7 @@ struct Printer<board::StateWrapper<State::Empty>>
 };
 
 template <>
-struct Printer<board::StateWrapper<State::O>>
+struct Printer<StateWrapper<State::O>>
 {
     static void print()
     {
@@ -126,7 +127,7 @@ struct Printer<board::StateWrapper<State::O>>
 };
 
 template <>
-struct Printer<board::StateWrapper<State::X>>
+struct Printer<StateWrapper<State::X>>
 {
     static void print()
     {
