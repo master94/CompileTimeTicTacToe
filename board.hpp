@@ -1,6 +1,7 @@
 #pragma once
 
 #include "list.hpp"
+#include "printer.hpp"
 
 struct Empty;
 struct X;
@@ -51,4 +52,78 @@ struct Set<x, y, Player, Board<w, h, List>>
 template <unsigned x, unsigned y, class Player, class Board>
 using set_t = typename Set<x, y, Player, Board>::Type;
 
+// ----------------------------------------------------------------------------
+
+template <bool cond>
+struct PrintNL
+{
+    static void print() {}
+};
+
+template <>
+struct PrintNL<true>
+{
+    static void print()
+    {
+        std::cout << std::endl;
+    }
+};
+
+template <class Board, unsigned pos>
+struct BoardPrinter;
+
+template <unsigned w, unsigned h, unsigned pos, class X, class... Xs>
+struct BoardPrinter<Board<w, h, List<X, Xs...>>, pos>
+{
+    static void print()
+    {
+        Printer<X>::print();
+        PrintNL<(pos + 1) % w == 0>::print();
+        BoardPrinter<Board<w, h, List<Xs...>>, pos + 1>::print();
+    }
+};
+
+template <unsigned w, unsigned h, unsigned pos>
+struct BoardPrinter<Board<w, h, List<>>, pos>
+{
+    static void print() {}
+};
+
 } // board
+
+
+template <unsigned w, unsigned h, class ElemList>
+struct Printer<board::Board<w, h, ElemList>>
+{
+    static void print()
+    {
+        board::BoardPrinter<board::Board<w, h, ElemList>, 0>::print();
+    }
+};
+
+template <>
+struct Printer<Empty>
+{
+    static void print()
+    {
+        std::cout << ".";
+    }
+};
+
+template <>
+struct Printer<O>
+{
+    static void print()
+    {
+        std::cout << "O";
+    }
+};
+
+template <>
+struct Printer<X>
+{
+    static void print()
+    {
+        std::cout << "X";
+    }
+};
