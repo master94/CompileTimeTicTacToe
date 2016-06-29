@@ -12,14 +12,6 @@ enum class Player
 template <class Board, Player turn>
 struct GameState;
 
-template <class Board>
-struct IsWin
-{
-    enum {
-        value = false
-    };
-};
-
 template <Player player>
 struct CellStateForPlayer;
 

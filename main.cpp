@@ -2,6 +2,8 @@
 
 #include "board.hpp"
 #include "game.hpp"
+#include "winner_check.hpp"
+
 
 int main(int argc, char **argv)
 {
@@ -11,6 +13,9 @@ int main(int argc, char **argv)
     using s2 = make_move_t<s1, 0, 0>;
     using s3 = make_move_t<s2, 2, 2>;
     using s4 = make_move_t<s3, 2, 0>;
-    Printer<s4>::print();
+    using s5 = make_move_t<s4, 0, 1>;
+    using s6 = make_move_t<s5, 1, 0>;
+    static_assert(IsWin<s6, 1, 0, 3>::value == 1, "Error");
+    Printer<s6>::print();
     return 0;
 }
